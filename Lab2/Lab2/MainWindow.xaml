@@ -30,24 +30,25 @@
         <!-- Верхня рамка для меню з градієнтною заливкою -->
         <Border Grid.Row="0" BorderBrush="#FFCBBEBE" BorderThickness="2" CornerRadius="10" Background="{StaticResource LinearPanelBrush}">
             <StackPanel Orientation="Horizontal">
-                <Button ToolTip="Відкрити" Style="{StaticResource ButtonStyle}">
+                <Button ToolTip="Відкрити" Command="Open" Style="{StaticResource ButtonStyle}">
                     <Image Source="images/open.png" Height="47" Width="47"/>
                 </Button>
 
-                <Button ToolTip="Стерти" Style="{StaticResource ButtonStyle}">
+                <Button ToolTip="Стерти" Command="Delete" Style="{StaticResource ButtonStyle}">
                     <Image Source="images/delete.png" Height="47" Width="47"/>
                 </Button>
 
-                <Button ToolTip="Копіювати" Style="{StaticResource ButtonStyle}">
+                <Button ToolTip="Копіювати" Style="{StaticResource ButtonStyle}" Command="Copy" CommandTarget="{Binding ElementName=textBox}">
                     <Image Source="images/copy.png" Height="47" Width="47"/>
                 </Button>
 
-                <Button ToolTip="Вставити" Style="{StaticResource ButtonStyle}">
+                <Button ToolTip="Вставити" Style="{StaticResource ButtonStyle}" Command="Paste" CommandTarget="{Binding ElementName=textBox}" >
                     <Image Source="images/paste.png" Height="47" Width="47"/>
                 </Button>
             </StackPanel>
         </Border>
 
+        <!-- Рамка з текстовою областю з градієнтною заливкою -->
         <Border Grid.Row="1" BorderBrush="#FFCBBEBE" BorderThickness="2" CornerRadius="10" Background="{StaticResource LinearPanelBrush}">
             <Grid Margin="10">
                 <Grid.RowDefinitions>
@@ -55,10 +56,13 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBox Grid.Row="0" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"/>
+                <TextBox x:Name="textBox" Grid.Row="0" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextWrapping="Wrap"/>
 
                 <DockPanel Grid.Row="1" LastChildFill="False">
-                    <Button Content="OK" DockPanel.Dock="Bottom" Width="34" Height="30"/>
+                    <Button ToolTip="Зберегти" Command="ApplicationCommands.Save" Content="OK" DockPanel.Dock="Bottom" Width="34" Height="30"/>
+                    <Label Content="Розмір шрифту:" VerticalAlignment="Center" Margin="4"/>
+                    <Slider x:Name="fontSlider" Margin="4" MinWidth="100" Maximum="100" Minimum="12" Value="20"  ValueChanged="fontSlider_ValueChanged"/>
+
                 </DockPanel>
             </Grid>
         </Border>
