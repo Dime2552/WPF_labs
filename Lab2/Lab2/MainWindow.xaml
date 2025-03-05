@@ -1,0 +1,37 @@
+﻿<Window x:Class="Lab2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lab2"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid ShowGridLines="True">
+        <!-- Визначення стовпців (3) -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Визначення рядків (3) -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <!-- 1 частина -->
+            <RowDefinition Height="4*" />
+            <!-- 4 частини -->
+            <RowDefinition Height="Auto" />
+            <!-- Автоматична висота -->
+        </Grid.RowDefinitions>
+
+        <!-- Розміщення елементів у другому стовпці -->
+        <Label Content="Label:" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" />
+        <TextBox Text="TextBox"
+            Grid.Row="1"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True" 
+                 Grid.ColumnSpan="3"/>
+        <Button Content="Button" Grid.Column="1" Grid.Row="2"  HorizontalAlignment="Stretch"/>
+    </Grid>
+
+</Window>
