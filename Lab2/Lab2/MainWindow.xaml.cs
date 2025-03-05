@@ -56,7 +56,7 @@ namespace Lab2
         private void execute_Save(object sender, ExecutedRoutedEventArgs e)
         {
             // Збереження тексту в файл
-            File.WriteAllText("D:\\KPI\\3curs\\2 семестр\\декларативка\\myFile.txt", textBox.Text);
+            File.WriteAllText("S:\\myFile.txt", textBox.Text);
             MessageBox.Show("The file was saved!");
 
         }
@@ -87,7 +87,6 @@ namespace Lab2
             textBox.Clear();
         }
 
-
         // Обробник для CanExecute для копіювання
         private void CanExecute_Copy(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -100,7 +99,6 @@ namespace Lab2
             textBox.Copy(); // Копіює виділений текст в буфер обміну
         }
 
-
         // Обробники для вставки
         private void CanExecute_Paste(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -112,18 +110,15 @@ namespace Lab2
             textBox.Paste(); // Вставляємо текст з буфера в TextBox
         }
 
-
         private void fontSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             // Змінюємо розмір шрифта для TextBox відповідно до значення Slider
             textBox.FontSize = e.NewValue;
         }
 
-
         private void textBox_TextChanged(object sender, TextChangedEventArgs e)
         {
 
         }
-
     }
 }
