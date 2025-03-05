@@ -6,9 +6,61 @@
         xmlns:local="clr-namespace:Lab2"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Canvas Background="Aqua" >
-        <Label Content="Label" Canvas.Left="20" Canvas.Top="18" Height="22" Width="44" FontSize="10"/>
-        <TextBox Text="TextBlock" Width="68" Height="20" Canvas.Left="40" Canvas.Top="40"/>
-        <Button Content="Button" Width="70" Height="23" Canvas.Left="60" Canvas.Top="60"/>
-    </Canvas>
+    <Window.Resources>
+
+        <LinearGradientBrush x:Key="LinearPanelBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="Yellow" Offset="0.0"/>
+            <GradientStop Color="Aqua" Offset="0.5"/>
+            <GradientStop Color="Yellow" Offset="1.0"/>
+        </LinearGradientBrush>
+
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="White"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Верхня рамка для меню з градієнтною заливкою -->
+        <Border Grid.Row="0" BorderBrush="#FFCBBEBE" BorderThickness="2" CornerRadius="10" Background="{StaticResource LinearPanelBrush}">
+            <StackPanel Orientation="Horizontal">
+                <Button ToolTip="Відкрити" Style="{StaticResource ButtonStyle}">
+                    <Image Source="images/open.png" Height="47" Width="47"/>
+                </Button>
+
+                <Button ToolTip="Стерти" Style="{StaticResource ButtonStyle}">
+                    <Image Source="images/delete.png" Height="47" Width="47"/>
+                </Button>
+
+                <Button ToolTip="Копіювати" Style="{StaticResource ButtonStyle}">
+                    <Image Source="images/copy.png" Height="47" Width="47"/>
+                </Button>
+
+                <Button ToolTip="Вставити" Style="{StaticResource ButtonStyle}">
+                    <Image Source="images/paste.png" Height="47" Width="47"/>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" BorderBrush="#FFCBBEBE" BorderThickness="2" CornerRadius="10" Background="{StaticResource LinearPanelBrush}">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBox Grid.Row="0" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"/>
+
+                <DockPanel Grid.Row="1" LastChildFill="False">
+                    <Button Content="OK" DockPanel.Dock="Bottom" Width="34" Height="30"/>
+                </DockPanel>
+            </Grid>
+        </Border>
+    </Grid>
 </Window>
