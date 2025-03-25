@@ -34,7 +34,7 @@
                     <Image Source="images/open.png" Height="47" Width="47"/>
                 </Button>
 
-                <Button ToolTip="Стерти" Command="Delete" Style="{StaticResource ButtonStyle}">
+                <Button ToolTip="Стерти" IsCancel="True" Command="Delete" Style="{StaticResource ButtonStyle}">
                     <Image Source="images/delete.png" Height="47" Width="47"/>
                 </Button>
 
@@ -59,7 +59,10 @@
                 <TextBox x:Name="textBox" Grid.Row="0" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextWrapping="Wrap"/>
 
                 <DockPanel Grid.Row="1" LastChildFill="False">
-                    <Button ToolTip="Зберегти" Command="ApplicationCommands.Save" Content="OK" DockPanel.Dock="Bottom" Width="34" Height="30"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button ToolTip="Зберегти" Command="Delete" Content="Cancel" DockPanel.Dock="Bottom" Width="34" Height="30" Margin="30"/>
+                        <Button ToolTip="Зберегти" Command="ApplicationCommands.Save" Content="OK" DockPanel.Dock="Bottom" Width="34" Height="30" IsDefault="True"/>
+                    </StackPanel>
                     <Label Content="Розмір шрифту:" VerticalAlignment="Center" Margin="4"/>
                     <Slider x:Name="fontSlider" Margin="4" MinWidth="100" Maximum="100" Minimum="12" Value="20"  ValueChanged="fontSlider_ValueChanged"/>
 
