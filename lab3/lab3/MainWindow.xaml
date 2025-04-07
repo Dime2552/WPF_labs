@@ -8,11 +8,11 @@
         Title="Конвертер чисел" Height="350" Width="400">
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -20,18 +20,18 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Text="Десяткова:" VerticalAlignment="Center" Margin="5"/>
-        <TextBox Grid.Column="1" Text="{Binding DecimalInput, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+        <Label Content="_Десяткова:" VerticalAlignment="Center" Margin="5" Target="{Binding ElementName=DecimalTextBox}"/>
+        <TextBox x:Name="DecimalTextBox" Grid.Column="1" Text="{Binding DecimalInput, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-        <TextBlock Text="Двійкова:" Grid.Row="1" VerticalAlignment="Center" Margin="5"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding BinaryInput, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+        <Label Content="_Двійкова:" Grid.Row="1" VerticalAlignment="Center" Margin="5" Target="{Binding ElementName=BinaryTextBox}"/>
+        <TextBox x:Name="BinaryTextBox" Grid.Row="1" Grid.Column="1" Text="{Binding BinaryInput, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-        <TextBlock Text="Вісімкова:" Grid.Row="2" VerticalAlignment="Center" Margin="5"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding OctalInput, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+        <Label Content="_Вісімкова:" Grid.Row="2" VerticalAlignment="Center" Margin="5" Target="{Binding ElementName=OctalTextBox}"/>
+        <TextBox x:Name="OctalTextBox" Grid.Row="2" Grid.Column="1" Text="{Binding OctalInput, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-        <TextBlock Text="Шістнадцяткова:" Grid.Row="3" VerticalAlignment="Center" Margin="5"/>
-        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding HexInput, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+        <Label Content="_Шістнадцяткова:" Grid.Row="3" VerticalAlignment="Center" Margin="5" Target="{Binding ElementName=HexTextBox}"/>
+        <TextBox x:Name="HexTextBox" Grid.Row="3" Grid.Column="1" Text="{Binding HexInput, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
 
-        <Button Grid.Row="4" Grid.ColumnSpan="2" Content="Очистити" Command="{Binding ClearCommand}" Margin="5"/>
+        <Button Grid.Row="4" Grid.ColumnSpan="2" Content="О_чистити" Command="{Binding ClearCommand}" Margin="5" IsDefault="True"/>
     </Grid>
 </Window>
