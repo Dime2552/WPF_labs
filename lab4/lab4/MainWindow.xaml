@@ -1,0 +1,77 @@
+﻿<Window x:Class="lab4.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:lab4"
+        mc:Ignorable="d"
+        Title="Керування Товарами" Height="400" Width="450">
+    <!-- Adjusted size for vertical layout -->
+    <DockPanel>
+        <!-- Панель інструментів (Stays at the top) -->
+        <ToolBar DockPanel.Dock="Top">
+            <Button Content="Додати Товар" Click="CreateButton_Click" Margin="2"/>
+            <Button Content="Видалити Товар" Click="DeleteButton_Click" Margin="2"/>
+            <Button Content="Оновити Товар" Click="UpdateButton_Click" Margin="2"/>
+            <Button Content="Оновити Список" Click="RefreshButton_Click" Margin="2"/>
+        </ToolBar>
+
+        <!-- Основна область: Все в одному стовпчику -->
+        <Grid Margin="5">
+            <!-- Added margin to the main grid -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*" />
+                <!-- ListBox takes more space -->
+                <RowDefinition Height="Auto" />
+                <!-- Details panel takes space as needed -->
+            </Grid.RowDefinitions>
+
+            <!-- Список Товарів (Top Row) -->
+            <ListBox Grid.Row="0" Margin="0,0,0,10"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     Name="listProducts"
+                     ItemsSource="{Binding}"
+                     DisplayMemberPath="Name" />
+
+                <!-- Панель Деталей (Bottom Row) -->
+                <!-- Setting DataContext to SelectedItem of ListBox (Binding remains the same) -->
+                <Grid Grid.Row="1" DataContext="{Binding ElementName=listProducts, Path=SelectedItem}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <!-- Labels -->
+                        <ColumnDefinition Width="*" />
+                        <!-- TextBoxes -->
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <!-- Removed Spacer RowDefinition -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Артикул -->
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="5" VerticalAlignment="Center">Артикул:</TextBlock>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding Path=Article, Mode=OneWay}" IsReadOnly="True" />
+
+                    <!-- Назва -->
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" VerticalAlignment="Center">Назва:</TextBlock>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding Path=Name, Mode=OneWay}" IsReadOnly="True"/>
+
+                    <!-- Одиниця виміру -->
+                    <TextBlock Grid.Row="2" Grid.Column="0" Margin="5" VerticalAlignment="Center">Одиниця виміру:</TextBlock>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="5" Text="{Binding Path=Unit, Mode=OneWay}" IsReadOnly="True"/>
+
+                    <!-- Кількість -->
+                    <TextBlock Grid.Row="3" Grid.Column="0" Margin="5" VerticalAlignment="Center">Кількість:</TextBlock>
+                    <TextBox Grid.Row="3" Grid.Column="1" Margin="5" Text="{Binding Path=Quantity, Mode=OneWay}" IsReadOnly="True"/>
+
+                    <!-- Ціна -->
+                    <TextBlock Grid.Row="4" Grid.Column="0" Margin="5" VerticalAlignment="Center">Ціна:</TextBlock>
+                    <TextBox Grid.Row="4" Grid.Column="1" Margin="5" Text="{Binding Path=Price, Mode=OneWay, StringFormat=C}" IsReadOnly="True"/>
+
+                </Grid>
+        </Grid>
+    </DockPanel>
+</Window>
