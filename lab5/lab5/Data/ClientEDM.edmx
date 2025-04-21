@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Lab5DBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Одиниці виміру">
+          <Key>
+            <PropertyRef Name="Код одиниці виміру" />
+          </Key>
+          <Property Name="Код одиниці виміру" Type="int" Nullable="false" />
+          <Property Name="Одиниця виміру" Type="nchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="Товари">
+          <Key>
+            <PropertyRef Name="Артикул" />
+          </Key>
+          <Property Name="Артикул" Type="int" Nullable="false" />
+          <Property Name="Код одиниці виміру" Type="int" />
+          <Property Name="Кількість" Type="int" />
+          <Property Name="Ціна" Type="decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <Association Name="FK__Товари__Код один__38996AB5">
+          <End Role="Одиниці виміру" Type="Self.Одиниці виміру" Multiplicity="0..1" />
+          <End Role="Товари" Type="Self.Товари" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Одиниці виміру">
+              <PropertyRef Name="Код одиниці виміру" />
+            </Principal>
+            <Dependent Role="Товари">
+              <PropertyRef Name="Код одиниці виміру" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Lab5DBModelStoreContainer">
+          <EntitySet Name="Одиниці виміру" EntityType="Self.Одиниці виміру" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Товари" EntityType="Self.Товари" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Товари__Код один__38996AB5" Association="Self.FK__Товари__Код один__38996AB5">
+            <End Role="Одиниці виміру" EntitySet="Одиниці виміру" />
+            <End Role="Товари" EntitySet="Товари" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Lab5DBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Одиниці_виміру">
+          <Key>
+            <PropertyRef Name="Код_одиниці_виміру" />
+          </Key>
+          <Property Name="Код_одиниці_виміру" Type="Int32" Nullable="false" />
+          <Property Name="Одиниця_виміру" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="Товари" Relationship="Self.FK__Товари__Код_один__38996AB5" FromRole="Одиниці_виміру" ToRole="Товари" />
+        </EntityType>
+        <EntityType Name="Товари">
+          <Key>
+            <PropertyRef Name="Артикул" />
+          </Key>
+          <Property Name="Артикул" Type="Int32" Nullable="false" />
+          <Property Name="Код_одиниці_виміру" Type="Int32" />
+          <Property Name="Кількість" Type="Int32" />
+          <Property Name="Ціна" Type="Decimal" Precision="18" Scale="2" />
+          <NavigationProperty Name="Одиниці_виміру" Relationship="Self.FK__Товари__Код_один__38996AB5" FromRole="Товари" ToRole="Одиниці_виміру" />
+        </EntityType>
+        <Association Name="FK__Товари__Код_один__38996AB5">
+          <End Role="Одиниці_виміру" Type="Self.Одиниці_виміру" Multiplicity="0..1" />
+          <End Role="Товари" Type="Self.Товари" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Одиниці_виміру">
+              <PropertyRef Name="Код_одиниці_виміру" />
+            </Principal>
+            <Dependent Role="Товари">
+              <PropertyRef Name="Код_одиниці_виміру" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Lab5DBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Одиниці_виміру" EntityType="Self.Одиниці_виміру" />
+          <EntitySet Name="Товари" EntityType="Self.Товари" />
+          <AssociationSet Name="FK__Товари__Код_один__38996AB5" Association="Self.FK__Товари__Код_один__38996AB5">
+            <End Role="Одиниці_виміру" EntitySet="Одиниці_виміру" />
+            <End Role="Товари" EntitySet="Товари" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Lab5DBModelStoreContainer" CdmEntityContainer="Lab5DBEntities">
+          <EntitySetMapping Name="Одиниці_виміру">
+            <EntityTypeMapping TypeName="Lab5DBModel.Одиниці_виміру">
+              <MappingFragment StoreEntitySet="Одиниці виміру">
+                <ScalarProperty Name="Код_одиниці_виміру" ColumnName="Код одиниці виміру" />
+                <ScalarProperty Name="Одиниця_виміру" ColumnName="Одиниця виміру" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Товари">
+            <EntityTypeMapping TypeName="Lab5DBModel.Товари">
+              <MappingFragment StoreEntitySet="Товари">
+                <ScalarProperty Name="Артикул" ColumnName="Артикул" />
+                <ScalarProperty Name="Код_одиниці_виміру" ColumnName="Код одиниці виміру" />
+                <ScalarProperty Name="Кількість" ColumnName="Кількість" />
+                <ScalarProperty Name="Ціна" ColumnName="Ціна" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
