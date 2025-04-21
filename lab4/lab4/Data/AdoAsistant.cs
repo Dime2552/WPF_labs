@@ -11,12 +11,10 @@ namespace lab4.Data
 {
     public class AdoAssistant
     {
-        // Отримуємо рядок з'єднання з файлу App.config
         private readonly string connectionString = System.Configuration.ConfigurationManager
             .ConnectionStrings["connectionStringName"].ConnectionString;
 
-        // Об'єкт DataTable для збереження даних Товарів
-        private DataTable dtProducts; // Renamed for clarity
+        private DataTable dtProducts;
 
         public void ClearCache()
         {
@@ -24,10 +22,9 @@ namespace lab4.Data
         }
 
         // Метод для завантаження даних із таблиці "Товари"
-        public DataTable LoadProducts() // Renamed and modified SQL
+        public DataTable LoadProducts()
         {
             // Завантажимо таблицю лише один раз, якщо вона вже існує і не пуста.
-            // Якщо потрібно завжди перезавантажувати з БД, видаліть цю перевірку.
             if (dtProducts != null && dtProducts.Rows.Count > 0)
                 return dtProducts;
 
@@ -61,7 +58,7 @@ namespace lab4.Data
         }
 
         // Метод для додавання нового товару
-        public bool AddProduct(int article, string name, string unit, int quantity, decimal price) // Modified parameters and SQL
+        public bool AddProduct(int article, string name, string unit, int quantity, decimal price)
         {
             string query = "INSERT INTO [dbo].[Товари] ([Артикул], [Назва], [Одиниця виміру], [Кількість], [Ціна]) VALUES (@Article, @Name, @Unit, @Quantity, @Price)";
 
@@ -161,7 +158,7 @@ namespace lab4.Data
                     int result = command.ExecuteNonQuery();
                     if (result > 0)
                     {
-                        //MessageBox.Show("Дані товару успішно оновлено!"); // Optional: confirmation message
+                        //MessageBox.Show("Дані товару успішно оновлено!");
                         return true;
                     }
                     else

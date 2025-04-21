@@ -5,37 +5,45 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:lab4"
         mc:Ignorable="d"
-        Title="Керування Товарами" Height="400" Width="450">
-    <!-- Adjusted size for vertical layout -->
+        Title="Керування Товарами" Height="450" Width="500">
+    <!-- Increased height -->
     <DockPanel>
-        <!-- Панель інструментів (Stays at the top) -->
-        <ToolBar DockPanel.Dock="Top">
-            <Button Content="Додати Товар" Click="CreateButton_Click" Margin="2"/>
-            <Button Content="Видалити Товар" Click="DeleteButton_Click" Margin="2"/>
-            <Button Content="Оновити Товар" Click="UpdateButton_Click" Margin="2"/>
-            <Button Content="Оновити Список" Click="RefreshButton_Click" Margin="2"/>
+        <!-- Панель інструментів -->
+        <ToolBar DockPanel.Dock="Top" Name="MainToolBar">
+            <!-- These buttons now START the add/edit process -->
+            <Button Name="AddProductButton" Content="Додати" Click="AddProductButton_Click" Margin="2"/>
+            <Separator/>
+            <Button Name="EditProductButton" Content="Редагувати" Click="EditProductButton_Click" Margin="2"/>
+            <Separator/>
+            <Button Name="DeleteProductButton" Content="Видалити" Click="DeleteButton_Click" Margin="2"/>
+            <Separator/>
+            <Button Name="RefreshListButton" Content="Оновити" Click="RefreshButton_Click" Margin="2"/>
         </ToolBar>
 
-        <!-- Основна область: Все в одному стовпчику -->
+        <!-- Основна область: Список + Панель Введення/Редагування -->
         <Grid Margin="5">
-            <!-- Added margin to the main grid -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*" />
-                <!-- ListBox takes more space -->
+                <!-- ListBox -->
                 <RowDefinition Height="Auto" />
-                <!-- Details panel takes space as needed -->
+                <!-- Input/Edit Panel -->
             </Grid.RowDefinitions>
 
             <!-- Список Товарів (Top Row) -->
-            <ListBox Grid.Row="0" Margin="0,0,0,10"
-                ScrollViewer.VerticalScrollBarVisibility="Auto"
+            <ListBox Grid.Row="0"
+                     Margin="0,0,0,10"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                      Name="listProducts"
                      ItemsSource="{Binding}"
-                     DisplayMemberPath="Name" />
+                     DisplayMemberPath="Name"
+                     SelectionChanged="ListProducts_SelectionChanged" />
+            <!-- Need to handle selection change -->
 
-                <!-- Панель Деталей (Bottom Row) -->
-                <!-- Setting DataContext to SelectedItem of ListBox (Binding remains the same) -->
-                <Grid Grid.Row="1" DataContext="{Binding ElementName=listProducts, Path=SelectedItem}">
+            <!-- Панель Введення/Редагування (Bottom Row) -->
+            <!-- DataContext is NOT bound here anymore, we manage fields manually -->
+            <Border Grid.Row="1" BorderBrush="LightGray" BorderThickness="1" Padding="5">
+                <Grid Name="InputEditPanel" IsEnabled="False">
+                    <!-- Initially disabled -->
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <!-- Labels -->
@@ -44,34 +52,48 @@
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
+                        <!-- Article -->
                         <RowDefinition Height="Auto" />
+                        <!-- Name -->
                         <RowDefinition Height="Auto" />
+                        <!-- Unit -->
                         <RowDefinition Height="Auto" />
+                        <!-- Quantity -->
                         <RowDefinition Height="Auto" />
-                        <!-- Removed Spacer RowDefinition -->
+                        <!-- Price -->
+                        <RowDefinition Height="Auto" />
+                        <!-- Buttons -->
                     </Grid.RowDefinitions>
 
                     <!-- Артикул -->
                     <TextBlock Grid.Row="0" Grid.Column="0" Margin="5" VerticalAlignment="Center">Артикул:</TextBlock>
-                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding Path=Article, Mode=OneWay}" IsReadOnly="True" />
+                    <TextBox Name="ArticleTextBox" Grid.Row="0" Grid.Column="1" Margin="5" />
 
                     <!-- Назва -->
                     <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" VerticalAlignment="Center">Назва:</TextBlock>
-                    <TextBox Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding Path=Name, Mode=OneWay}" IsReadOnly="True"/>
+                    <TextBox Name="NameTextBox" Grid.Row="1" Grid.Column="1" Margin="5" />
 
                     <!-- Одиниця виміру -->
                     <TextBlock Grid.Row="2" Grid.Column="0" Margin="5" VerticalAlignment="Center">Одиниця виміру:</TextBlock>
-                    <TextBox Grid.Row="2" Grid.Column="1" Margin="5" Text="{Binding Path=Unit, Mode=OneWay}" IsReadOnly="True"/>
+                    <TextBox Name="UnitTextBox" Grid.Row="2" Grid.Column="1" Margin="5" />
 
                     <!-- Кількість -->
                     <TextBlock Grid.Row="3" Grid.Column="0" Margin="5" VerticalAlignment="Center">Кількість:</TextBlock>
-                    <TextBox Grid.Row="3" Grid.Column="1" Margin="5" Text="{Binding Path=Quantity, Mode=OneWay}" IsReadOnly="True"/>
+                    <TextBox Name="QuantityTextBox" Grid.Row="3" Grid.Column="1" Margin="5" />
 
                     <!-- Ціна -->
                     <TextBlock Grid.Row="4" Grid.Column="0" Margin="5" VerticalAlignment="Center">Ціна:</TextBlock>
-                    <TextBox Grid.Row="4" Grid.Column="1" Margin="5" Text="{Binding Path=Price, Mode=OneWay, StringFormat=C}" IsReadOnly="True"/>
+                    <TextBox Name="PriceTextBox" Grid.Row="4" Grid.Column="1" Margin="5" />
 
+                    <!-- Save / Cancel Buttons (Initially hidden) -->
+                    <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
+                                Orientation="Horizontal" HorizontalAlignment="Right" Margin="5"
+                                Name="SaveChangesPanel" Visibility="Collapsed">
+                        <Button Name="SaveButton" Content="Зберегти" Width="80" Margin="0,0,10,0" Click="SaveButton_Click" IsDefault="True"/>
+                        <Button Name="CancelButton" Content="Скасувати" Width="80" Click="CancelButton_Click" IsCancel="True"/>
+                    </StackPanel>
                 </Grid>
+            </Border>
         </Grid>
     </DockPanel>
 </Window>

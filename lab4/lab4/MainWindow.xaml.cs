@@ -1,181 +1,185 @@
 ﻿using System;
 using System.Data;
-using System.Globalization; // For decimal parsing/formatting
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using lab4.Data;
 
-namespace lab4 // Make sure namespace matches your project structure
+namespace lab4 // Assuming this namespace is correct
 {
     public partial class MainWindow : Window
     {
-        private AdoAssistant adoAssistant; // Renamed for clarity
-        private DataTable productsTable; // To hold the data
+        private AdoAssistant adoAssistant;
+        private DataTable productsTable;
+
+        // Enum to manage the state of the input panel
+        private enum EditMode { Viewing, Adding, Editing }
+        private EditMode currentMode = EditMode.Viewing;
 
         public MainWindow()
         {
             InitializeComponent();
             adoAssistant = new AdoAssistant();
-            // Load data when the window is initialized
             LoadData();
+            UpdateUIMode(); // Set initial UI state
         }
 
         private void LoadData()
         {
-            // Завантажуємо або перезавантажуємо дані з бази
+            // Preserve selection if possible
+            object selectedItem = listProducts.SelectedItem;
+            int selectedArticle = -1;
+            if (selectedItem is DataRowView rowView)
+            {
+                selectedArticle = (int)rowView["Article"];
+            }
+
             productsTable = adoAssistant.LoadProducts(); // Use the correct method
 
-            if (productsTable != null && productsTable.Rows.Count > 0)
+            if (productsTable != null)
             {
-                // Оновлюємо ItemsSource для ListBox
-                listProducts.ItemsSource = productsTable.DefaultView; // Bind to the correct ListBox
-                // listProducts.SelectedIndex = 0; // Optionally select the first item
-            }
-            else
-            {
-                listProducts.ItemsSource = null; // Clear listbox if no data
-                // MessageBox.Show("Дані товарів не завантажені або таблиця порожня.");
-            }
-        }
-
-        // --- Button Click Handlers ---
-
-        private void CreateButton_Click(object sender, RoutedEventArgs e)
-        {
-            AddProductWindow addProductWindow = new AddProductWindow();
-            bool? dialogResult = addProductWindow.ShowDialog();
-
-            if (dialogResult == true)
-            {
-                // Data was entered and OK was clicked in the AddProductWindow
-                try
+                listProducts.ItemsSource = productsTable.DefaultView;
+                if (selectedArticle != -1)
                 {
-                    // Retrieve data from the AddProductWindow properties or controls
-                    int article = addProductWindow.Article;
-                    string name = addProductWindow.ProductName; // Use properties
-                    string unit = addProductWindow.Unit;
-                    int quantity = addProductWindow.Quantity;
-                    decimal price = addProductWindow.Price;
-
-                    // Add the new product using AdoAssistant
-                    if (adoAssistant.AddProduct(article, name, unit, quantity, price))
-                    {
-                        MessageBox.Show("Товар успішно додано!");
-                        // Refresh data in the ListBox
-                        LoadData();
-                        // Optionally, try to select the newly added item
-                        SelectProductByArticle(article);
-                    }
-                    // Error messages are handled within AdoAssistant methods now
+                    SelectProductByArticle(selectedArticle); // Try to re-select
                 }
-                catch (Exception ex)
+                else if (listProducts.Items.Count > 0)
                 {
-                    MessageBox.Show($"Помилка при додаванні товару: {ex.Message}\n{ex.StackTrace}");
-                }
-            }
-        }
-
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Перевірка, чи вибрано товар у списку
-            if (listProducts.SelectedItem is DataRowView selectedRow) // Use 'is' pattern matching
-            {
-                // Отримуємо Артикул вибраного товару
-                int productArticle = (int)selectedRow["Article"]; // Use the alias/column name
-
-                // Confirm deletion
-                MessageBoxResult confirm = MessageBox.Show($"Ви впевнені, що хочете видалити товар з артикулом {productArticle}?",
-                                                            "Підтвердження видалення", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-
-                if (confirm == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        // Запит на видалення товару з бази даних
-                        if (adoAssistant.DeleteProduct(productArticle))
-                        {
-                            MessageBox.Show("Товар успішно видалено!");
-                            // Перезавантажуємо дані після видалення
-                            LoadData();
-                        }
-                        // Error messages handled in AdoAssistant
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Помилка при видаленні товару: {ex.Message}");
-                    }
+                    listProducts.SelectedIndex = 0; // Select first if nothing was selected
                 }
             }
             else
             {
-                MessageBox.Show("Будь ласка, виберіть товар для видалення.");
+                listProducts.ItemsSource = null;
             }
+            // Ensure UI reflects the current selection or lack thereof
+            ListProducts_SelectionChanged(null, null);
+            UpdateUIMode(); // Re-apply UI state after loading
         }
 
-        private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        // --- State Management ---
+
+        private void SetMode(EditMode newMode)
         {
-            // Перевірка, чи вибрано товар для оновлення
-            if (listProducts.SelectedItem is DataRowView selectedRow)
-            {
-                try
-                {
-                    // Отримуємо поточні дані вибраного товару
-                    int productArticle = (int)selectedRow["Article"];
-                    string name = selectedRow["Name"].ToString();
-                    string unit = selectedRow["Unit"].ToString();
-                    // Handle potential DBNull for nullable types if necessary before casting
-                    int quantity = selectedRow["Quantity"] != DBNull.Value ? (int)selectedRow["Quantity"] : 0; // Example handling
-                    decimal price = selectedRow["Price"] != DBNull.Value ? (decimal)selectedRow["Price"] : 0.0m; // Example handling
-
-
-                    // Відкриваємо вікно для оновлення даних товару
-                    UpdateProductWindow updateProductWindow = new UpdateProductWindow(productArticle, name, unit, quantity, price);
-                    bool? dialogResult = updateProductWindow.ShowDialog();
-
-                    // Якщо користувач натиснув "OK"
-                    if (dialogResult == true)
-                    {
-                        // Отримуємо оновлені дані з вікна
-                        string updatedName = updateProductWindow.ProductName; // Use properties
-                        string updatedUnit = updateProductWindow.Unit;
-                        int updatedQuantity = updateProductWindow.Quantity;
-                        decimal updatedPrice = updateProductWindow.Price;
-
-                        // Оновлюємо дані товару в базі
-                        if (adoAssistant.UpdateProduct(productArticle, updatedName, updatedUnit, updatedQuantity, updatedPrice))
-                        {
-                            MessageBox.Show("Дані товару успішно оновлено!");
-                            // Перезавантажуємо дані після оновлення
-                            LoadData();
-                            // Re-select the updated item
-                            SelectProductByArticle(productArticle);
-                        }
-                        // Errors handled in AdoAssistant
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Помилка при підготовці до оновлення товару: {ex.Message}");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Будь ласка, виберіть товар для оновлення.");
-            }
+            currentMode = newMode;
+            UpdateUIMode();
         }
 
-        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        private void UpdateUIMode()
         {
-            // Force reload data from database
-            productsTable = null; // Clear the cached table
-            adoAssistant.ClearCache();
-            LoadData();
+            switch (currentMode)
+            {
+                case EditMode.Viewing:
+                    InputEditPanel.IsEnabled = false; // Disable the whole panel
+                    SaveChangesPanel.Visibility = Visibility.Collapsed; // Hide Save/Cancel
+                    listProducts.IsEnabled = true; // Enable the list
+                    MainToolBar.IsEnabled = true; // Enable Toolbar
+                    // Buttons that require selection might need disabling if nothing is selected
+                    EditProductButton.IsEnabled = listProducts.SelectedItem != null;
+                    DeleteProductButton.IsEnabled = listProducts.SelectedItem != null;
+                    ArticleTextBox.IsReadOnly = true; // Keep Article RO even if panel enabled later
+                    break;
+
+                case EditMode.Adding:
+                    InputEditPanel.IsEnabled = true; // Enable panel for input
+                    SaveChangesPanel.Visibility = Visibility.Visible; // Show Save/Cancel
+                    listProducts.IsEnabled = false; // Disable list during add
+                    MainToolBar.IsEnabled = false; // Disable Toolbar during add
+                    ArticleTextBox.IsReadOnly = false; // Article is editable when adding NEW
+                    ClearInputFields();
+                    ArticleTextBox.Focus();
+                    break;
+
+                case EditMode.Editing:
+                    InputEditPanel.IsEnabled = true; // Enable panel for editing
+                    SaveChangesPanel.Visibility = Visibility.Visible; // Show Save/Cancel
+                    listProducts.IsEnabled = false; // Disable list during edit
+                    MainToolBar.IsEnabled = false; // Disable Toolbar during edit
+                    ArticleTextBox.IsReadOnly = true; // Article (PK) CANNOT be edited
+                    // Data should already be populated by selection or Edit click
+                    NameTextBox.Focus();
+                    break;
+            }
         }
 
-        // Helper method to select an item in the listbox by Article
+        // --- Helper Methods ---
+
+        private void ClearInputFields()
+        {
+            ArticleTextBox.Text = "";
+            NameTextBox.Text = "";
+            UnitTextBox.Text = "";
+            QuantityTextBox.Text = "";
+            PriceTextBox.Text = "";
+        }
+
+        private void PopulateInputFields(DataRowView rowView)
+        {
+            if (rowView == null)
+            {
+                ClearInputFields();
+                return;
+            }
+            ArticleTextBox.Text = rowView["Article"].ToString();
+            NameTextBox.Text = rowView["Name"]?.ToString() ?? ""; // Handle potential DBNull
+            UnitTextBox.Text = rowView["Unit"]?.ToString() ?? "";   // Handle potential DBNull
+            // Handle potential DBNull before converting to string
+            QuantityTextBox.Text = rowView["Quantity"] != DBNull.Value ? rowView["Quantity"].ToString() : "";
+            PriceTextBox.Text = rowView["Price"] != DBNull.Value
+                ? ((decimal)rowView["Price"]).ToString("F2", CultureInfo.InvariantCulture)
+                : "";
+        }
+
+        private bool ValidateInput(out int article, out string name, out string unit, out int quantity, out decimal price)
+        {
+            article = 0;
+            name = "";
+            unit = "";
+            quantity = 0;
+            price = 0;
+
+            // Validate Article (only required if Adding)
+            if (currentMode == EditMode.Adding)
+            {
+                if (!int.TryParse(ArticleTextBox.Text, out article) || article <= 0)
+                {
+                    MessageBox.Show("Будь ласка, введіть коректний позитивний Артикул.", "Помилка вводу", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    ArticleTextBox.Focus();
+                    return false;
+                }
+            }
+            else // If Editing, get article from the read-only textbox (or better, store it when edit starts)
+            {
+                if (!int.TryParse(ArticleTextBox.Text, out article)) // Should always parse if editing
+                {
+                    MessageBox.Show("Помилка: Не вдалося отримати Артикул для оновлення.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+            }
+
+
+            name = NameTextBox.Text; // Add validation if required (e.g., not empty)
+            unit = UnitTextBox.Text; // Add validation if required
+
+            if (!int.TryParse(QuantityTextBox.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out quantity) || quantity < 0)
+            {
+                MessageBox.Show("Будь ласка, введіть коректну невід'ємну Кількість.", "Помилка вводу", MessageBoxButton.OK, MessageBoxImage.Warning);
+                QuantityTextBox.Focus();
+                return false;
+            }
+
+            if (!decimal.TryParse(PriceTextBox.Text, NumberStyles.Number, CultureInfo.InvariantCulture, out price) || price < 0)
+            {
+                MessageBox.Show("Будь ласка, введіть коректну невід'ємну Ціну (використовуйте '.' як десятковий роздільник).", "Помилка вводу", MessageBoxButton.OK, MessageBoxImage.Warning);
+                PriceTextBox.Focus();
+                return false;
+            }
+            return true;
+        }
+
         private void SelectProductByArticle(int article)
         {
-            if (productsTable == null)
+            if (productsTable == null || listProducts == null)
                 return;
 
             for (int i = 0; i < productsTable.DefaultView.Count; i++)
@@ -187,14 +191,133 @@ namespace lab4 // Make sure namespace matches your project structure
                     break;
                 }
             }
+            // Ensure the UI reflects the selection change
+            ListProducts_SelectionChanged(null, null);
         }
 
-        /* Optional: If you want details to update immediately on selection change
+
+        // --- Event Handlers ---
+
         private void ListProducts_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // The DataContext binding handles this automatically now
-            // You could add specific logic here if needed when selection changes
+            if (currentMode == EditMode.Viewing && listProducts.SelectedItem is DataRowView selectedRow)
+            {
+                PopulateInputFields(selectedRow);
+                EditProductButton.IsEnabled = true; // Enable edit/delete now that item selected
+                DeleteProductButton.IsEnabled = true;
+            }
+            else if (currentMode == EditMode.Viewing) // No selection or invalid selection
+            {
+                ClearInputFields();
+                EditProductButton.IsEnabled = false; // Disable edit/delete
+                DeleteProductButton.IsEnabled = false;
+            }
+            // Do nothing if Adding or Editing mode, selection is disabled anyway
         }
-        */
+
+
+        private void AddProductButton_Click(object sender, RoutedEventArgs e)
+        {
+            SetMode(EditMode.Adding);
+        }
+
+        private void EditProductButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (listProducts.SelectedItem != null)
+            {
+                // Data should already be in fields due to selection change
+                SetMode(EditMode.Editing);
+            }
+            else
+            {
+                MessageBox.Show("Будь ласка, виберіть товар для редагування.", "Редагування", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ValidateInput(out int article, out string name, out string unit, out int quantity, out decimal price))
+            {
+                bool success = false;
+                try
+                {
+                    if (currentMode == EditMode.Adding)
+                    {
+                        success = adoAssistant.AddProduct(article, name, unit, quantity, price);
+                        if (success)
+                            MessageBox.Show("Товар успішно додано!");
+                    }
+                    else if (currentMode == EditMode.Editing)
+                    {
+                        // 'article' comes from validation which reads the (now read-only) ArticleTextBox
+                        success = adoAssistant.UpdateProduct(article, name, unit, quantity, price);
+                        if (success)
+                            MessageBox.Show("Товар успішно оновлено!");
+                    }
+
+                    if (success)
+                    {
+                        LoadData(); // Reload data to show changes
+                        SelectProductByArticle(article); // Try to re-select the item
+                        SetMode(EditMode.Viewing); // Return to viewing mode
+                    }
+                    // Error messages for DB operations are handled within AdoAssistant now
+                }
+                catch (Exception ex) // Catch unexpected errors during save process
+                {
+                    MessageBox.Show($"Сталася помилка при збереженні: {ex.Message}", "Помилка збереження", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            // If validation fails, do nothing - messages are shown by ValidateInput
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            SetMode(EditMode.Viewing);
+            // Repopulate fields with current selection after canceling
+            ListProducts_SelectionChanged(null, null);
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentMode != EditMode.Viewing)
+                return; // Should not happen if UI logic is correct
+
+            if (listProducts.SelectedItem is DataRowView selectedRow)
+            {
+                int productArticle = (int)selectedRow["Article"];
+                MessageBoxResult confirm = MessageBox.Show($"Ви впевнені, що хочете видалити товар з артикулом {productArticle}?",
+                                                            "Підтвердження видалення", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (confirm == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        if (adoAssistant.DeleteProduct(productArticle))
+                        {
+                            MessageBox.Show("Товар успішно видалено!");
+                            LoadData(); // Refresh list
+                                        // Selection will be lost or changed, handled by LoadData/SelectionChanged
+                            SetMode(EditMode.Viewing); // Ensure viewing mode
+                        }
+                        // DB errors handled in AdoAssistant
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Помилка при видаленні товару: {ex.Message}", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Будь ласка, виберіть товар для видалення.");
+            }
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            SetMode(EditMode.Viewing); // Ensure viewing mode before refresh
+            adoAssistant.ClearCache(); // Clear cache if you implemented it
+            LoadData();
+        }
     }
 }
