@@ -5,100 +5,123 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:lab5"
         mc:Ignorable="d"
-        Title="Каталог товарів" Height="450" Width="800"
+        Title="Каталог товарів"
+        Height="600" Width="850"
+        MinHeight="450" MinWidth="700"
         Loaded="Window_Loaded">
     <Grid>
-        <TabControl Name="MainTabControl" Margin="5">
-            <!-- Вкладка 1: Товари -->
-            <TabItem Header="Товари">
-                <Grid>
-                    <DataGrid Name="ProductsDataGrid" AutoGenerateColumns="False" Margin="5" IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Артикул" Binding="{Binding Артикул}" />
-                            <DataGridTextColumn Header="Одиниця виміру" Binding="{Binding Одиниця}" />
-                            <DataGridTextColumn Header="Кількість" Binding="{Binding Кількість}" />
-                            <DataGridTextColumn Header="Ціна" Binding="{Binding Ціна, StringFormat=C}" />
-                            <!-- Додано форматування валюти -->
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
+        <!-- Viewbox для масштабування всього вмісту -->
+        <Viewbox Stretch="Uniform">
+            <Grid Width="800" Height="550">
 
-            <!-- Вкладка 2: Одиниці виміру -->
-            <TabItem Header="Одиниці виміру">
-                <Grid>
-                    <DataGrid Name="UnitsDataGrid" AutoGenerateColumns="False" Margin="5" IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Код" Binding="{Binding Код_одиниці_виміру}" />
-                            <DataGridTextColumn Header="Назва одиниці" Binding="{Binding Одиниця_виміру}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
+                <TabControl Name="MainTabControl" Margin="5">
+                    <!-- Вкладка 1: Товари -->
+                    <TabItem Header="Товари">
+                        <Grid>
+                            <!-- DataGrid буде розтягуватися завдяки Grid -->
+                            <DataGrid Name="ProductsDataGrid" AutoGenerateColumns="False" Margin="5" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Артикул" Binding="{Binding Артикул}" Width="Auto"/>
+                                    <DataGridTextColumn Header="Одиниця виміру" Binding="{Binding Одиниця}" Width="*"/>
+                                    <DataGridTextColumn Header="Кількість" Binding="{Binding Кількість}" Width="Auto"/>
+                                    <DataGridTextColumn Header="Ціна" Binding="{Binding Ціна, StringFormat=C}" Width="Auto"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
 
-            <!-- Вкладка 3: Загальна кількість по одиницях виміру -->
-            <TabItem Header="Кількість по одиницях">
-                <Grid>
-                    <DataGrid Name="QuantityByUnitDataGrid" AutoGenerateColumns="False" Margin="5" IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Одиниця виміру" Binding="{Binding ОдиницяВиміру}" />
-                            <DataGridTextColumn Header="Загальна кількість" Binding="{Binding ЗагальнаКількість}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
+                    <!-- Вкладка 2: Одиниці виміру -->
+                    <TabItem Header="Одиниці виміру">
+                        <Grid>
+                            <DataGrid Name="UnitsDataGrid" AutoGenerateColumns="False" Margin="5" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Код" Binding="{Binding Код_одиниці_виміру}" Width="Auto"/>
+                                    <DataGridTextColumn Header="Назва одиниці" Binding="{Binding Одиниця_виміру}" Width="*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
 
-            <!-- Вкладка 4: Пошук товару за артикулом -->
-            <TabItem Header="Пошук товару">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Orientation="Horizontal" Margin="5">
-                        <TextBlock Text="Артикул товару:" VerticalAlignment="Center" Margin="5"/>
-                        <TextBox Name="ProductSkuTextBox" Width="200" Margin="5"/>
-                        <Button Name="SearchProductButton" Content="Пошук" Click="SearchProductButton_Click" Margin="5"/>
-                    </StackPanel>
-                    <DataGrid Name="FilteredProductsDataGrid" AutoGenerateColumns="False" Margin="5" Grid.Row="1" IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Артикул" Binding="{Binding Артикул}" />
-                            <DataGridTextColumn Header="Одиниця виміру" Binding="{Binding Одиниця}" />
-                            <DataGridTextColumn Header="Кількість" Binding="{Binding Кількість}" />
-                            <DataGridTextColumn Header="Ціна" Binding="{Binding Ціна, StringFormat=C}" />
-                            <!-- Додано форматування валюти -->
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
+                    <!-- Вкладка 3: Загальна кількість по одиницях виміру -->
+                    <TabItem Header="Кількість по одиницях">
+                        <Grid>
+                            <DataGrid Name="QuantityByUnitDataGrid" AutoGenerateColumns="False" Margin="5" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Одиниця виміру" Binding="{Binding ОдиницяВиміру}" Width="*"/>
+                                    <DataGridTextColumn Header="Загальна кількість" Binding="{Binding ЗагальнаКількість}" Width="Auto"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
 
-            <!-- НОВА ВКЛАДКА 5: Пошук товару за одиницею виміру -->
-            <TabItem Header="Пошук за одиницею">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Orientation="Horizontal" Margin="5" Grid.Row="0">
-                        <TextBlock Text="Оберіть одиницю виміру:" VerticalAlignment="Center" Margin="5"/>
-                        <!-- ComboBox для вибору одиниці виміру -->
-                        <ComboBox Name="UnitComboBox" Width="200" Margin="5" VerticalAlignment="Center"/>
-                        <!-- Кнопка для запуску пошуку за одиницею -->
-                        <Button Name="SearchByUnitButton" Content="Знайти товари" Click="SearchByUnitButton_Click" Margin="5"/>
-                    </StackPanel>
-                    <!-- DataGrid для відображення товарів, знайдених за одиницею виміру -->
-                    <DataGrid Name="ProductsByUnitDataGrid" AutoGenerateColumns="False" Margin="5" Grid.Row="1" IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Артикул" Binding="{Binding Артикул}" />
-                            <DataGridTextColumn Header="Одиниця виміру" Binding="{Binding Одиниця}" />
-                            <DataGridTextColumn Header="Кількість" Binding="{Binding Кількість}" />
-                            <DataGridTextColumn Header="Ціна" Binding="{Binding Ціна, StringFormat=C}" />
-                            <!-- Додано форматування валюти -->
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
+                    <!-- Вкладка 4: Пошук товару за артикулом -->
+                    <TabItem Header="Пошук товару">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <!-- Використовуємо Grid замість StackPanel для кращої адаптивності по ширині -->
+                            <Grid Margin="5" Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Для TextBlock -->
+                                    <ColumnDefinition Width="*"/>
+                                    <!-- Для TextBox (розтягується) -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Для Button -->
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Артикул товару:" VerticalAlignment="Center" Margin="0,0,5,0" Grid.Column="0"/>
+                                <!-- Прибрано фіксовану ширину, TextBox розтягнеться -->
+                                <TextBox Name="ProductSkuTextBox" Margin="5,0,5,0" VerticalAlignment="Center" Grid.Column="1"/>
+                                <Button Name="SearchProductButton" Content="Пошук" Click="SearchProductButton_Click" Margin="5,0,0,0" Grid.Column="2"/>
+                            </Grid>
+                            <!-- DataGrid займає весь залишок місця (*) -->
+                            <DataGrid Name="FilteredProductsDataGrid" AutoGenerateColumns="False" Margin="5" Grid.Row="1" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Артикул" Binding="{Binding Артикул}" Width="Auto"/>
+                                    <DataGridTextColumn Header="Одиниця виміру" Binding="{Binding Одиниця}" Width="*"/>
+                                    <DataGridTextColumn Header="Кількість" Binding="{Binding Кількість}" Width="Auto"/>
+                                    <DataGridTextColumn Header="Ціна" Binding="{Binding Ціна, StringFormat=C}" Width="Auto"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
 
-        </TabControl>
+                    <!-- Вкладка 5: Пошук товару за одиницею виміру -->
+                    <TabItem Header="Пошук за одиницею">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <!-- Використовуємо Grid замість StackPanel -->
+                            <Grid Margin="5" Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Для TextBlock -->
+                                    <ColumnDefinition Width="*"/>
+                                    <!-- Для ComboBox -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Для Button -->
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Оберіть одиницю виміру:" VerticalAlignment="Center" Margin="0,0,5,0" Grid.Column="0"/>
+                                <ComboBox Name="UnitComboBox" Margin="5,0,5,0" VerticalAlignment="Center" Grid.Column="1"/>
+                                <Button Name="SearchByUnitButton" Content="Знайти товари" Click="SearchByUnitButton_Click" Margin="5,0,0,0" Grid.Column="2"/>
+                            </Grid>
+                            <DataGrid Name="ProductsByUnitDataGrid" AutoGenerateColumns="False" Margin="5" Grid.Row="1" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Артикул" Binding="{Binding Артикул}" Width="Auto"/>
+                                    <DataGridTextColumn Header="Одиниця виміру" Binding="{Binding Одиниця}" Width="*"/>
+                                    <DataGridTextColumn Header="Кількість" Binding="{Binding Кількість}" Width="Auto"/>
+                                    <DataGridTextColumn Header="Ціна" Binding="{Binding Ціна, StringFormat=C}" Width="Auto"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
+
+                </TabControl>
+            </Grid>
+        </Viewbox>
     </Grid>
 </Window>
