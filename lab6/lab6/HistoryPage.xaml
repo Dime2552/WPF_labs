@@ -1,0 +1,116 @@
+﻿<Page x:Class="lab6.HistoryPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:lab6"
+      mc:Ignorable="d" 
+      Title="Сторінка Історії" Loaded="Page_Loaded">
+    <Page.Resources>
+        <Style TargetType="Image" x:Key="MenuIconStyle">
+            <Setter Property="Width" Value="16"/>
+            <Setter Property="Height" Value="16"/>
+        </Style>
+        <Style TargetType="Image" x:Key="ToolBarIconStyle">
+            <Setter Property="Width" Value="20"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Margin" Value="0,0,3,0"/>
+        </Style>
+    </Page.Resources>
+
+    <Page.CommandBindings>
+        <CommandBinding Command="local:DataCommands.Undo" CanExecute="UndoCommand_CanExecute" Executed="UndoCommand_Executed"/>
+        <CommandBinding Command="local:DataCommands.New" CanExecute="NewCommand_CanExecute" Executed="NewCommand_Executed"/>
+        <CommandBinding Command="local:DataCommands.Edit" CanExecute="EditCommand_CanExecute" Executed="EditCommand_Executed"/>
+        <!-- CommandBinding для Save видалено, оскільки кнопка видалена -->
+        <!-- <CommandBinding Command="local:DataCommands.Save" CanExecute="SaveCommand_CanExecute" Executed="SaveCommand_Executed"/> -->
+        <!-- CommandBinding для Find видалено, оскільки кнопка видалена -->
+        <!-- <CommandBinding Command="local:DataCommands.Find" CanExecute="FindCommand_CanExecute" Executed="FindCommand_Executed"/> -->
+        <CommandBinding Command="local:DataCommands.Delete" CanExecute="DeleteCommand_CanExecute" Executed="DeleteCommand_Executed"/>
+    </Page.CommandBindings>
+
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_Файл">
+                <MenuItem Header="_Створити" Command="local:DataCommands.New"/>
+                <!-- Пункт "Зберегти" видалено -->
+                <Separator/>
+                <MenuItem Header="_Вихід" Click="Exit_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Правка">
+                <MenuItem Header="_Скасувати" Command="local:DataCommands.Undo"/>
+                <Separator/>
+                <MenuItem Header="Редагу_вати" Command="local:DataCommands.Edit"/>
+                <!-- Пункт "Знайти" видалено -->
+                <MenuItem Header="_Видалити" Command="local:DataCommands.Delete"/>
+            </MenuItem>
+        </Menu>
+
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                <Button Command="local:DataCommands.New" ToolTip="Створити (Ctrl+N)">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Створити"/>
+                    </StackPanel>
+                </Button>
+                <!-- Кнопка "Зберегти" видалена -->
+                <Separator/>
+                <Button Command="local:DataCommands.Undo" ToolTip="Скасувати (Ctrl+Z)">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Скасувати"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="local:DataCommands.Edit" ToolTip="Редагувати (Ctrl+E)">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Редагувати"/>
+                    </StackPanel>
+                </Button>
+                <!-- Кнопка "Знайти" видалена -->
+                <Button Command="local:DataCommands.Delete" ToolTip="Видалити (Del)">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Видалити"/>
+                    </StackPanel>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+        
+        <Grid Margin="10"> 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> 
+                <RowDefinition Height="Auto"/> 
+                <RowDefinition Height="Auto"/> 
+                <RowDefinition Height="*"/>   
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Історія Конвертацій" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,5,0,10"/>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5,0,5,10" HorizontalAlignment="Left"> 
+                <Label Content="Шукати:" VerticalAlignment="Center"/> <!-- Змінив текст на "Шукати" -->
+                <TextBox Width="200" Margin="5,0" VerticalAlignment="Center"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Delay=300}"
+                         ToolTip="Введіть текст для пошуку по будь-якому полю"/>
+                <Button Content="Очистити" Margin="5,0" VerticalAlignment="Center"
+                        Command="{Binding ClearSearchCommand}"/>
+            </StackPanel>
+
+            <Button Grid.Row="2" Content="Оновити історію" Command="{Binding RefreshHistoryCommand}" 
+                    HorizontalAlignment="Left" Margin="5,0,5,10"/>
+
+            <DataGrid Grid.Row="3" Margin="0,5,0,0" Name="HistoryDataGrid" 
+                      ItemsSource="{Binding FilteredHistoryEntries}" 
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True" CanUserAddRows="False"
+                      SelectionMode="Single"
+                      HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto" SortDirection="Descending"/>
+                    <DataGridTextColumn Header="Користувач" Binding="{Binding Username}" Width="Auto"/>
+                    <DataGridTextColumn Header="Десяткове" Binding="{Binding Decimal}" Width="*"/>
+                    <DataGridTextColumn Header="Двійкове" Binding="{Binding Binary}" Width="*"/>
+                    <DataGridTextColumn Header="Вісімкове" Binding="{Binding Octal}" Width="*"/>
+                    <DataGridTextColumn Header="Шістнадцяткове" Binding="{Binding Hexadecimal}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </DockPanel>
+</Page>

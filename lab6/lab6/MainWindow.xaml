@@ -5,75 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:lab6"
         mc:Ignorable="d"
-        Title="Конвертер та Історія" Height="450" Width="600">
-
-    <TabControl Margin="5">
-        <!-- Конвертер -->
-        <TabItem Header="Конвертер">
-            <Grid Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- Поля вводу -->
-                <Label Content="_Ім'я користувача:" Grid.Row="0" VerticalAlignment="Center" Margin="5" Target="{Binding ElementName=UsernameTextBox}"/>
-                <TextBox x:Name="UsernameTextBox" Grid.Row="0" Grid.Column="1" Text="{Binding Username}" Margin="5"/>
-
-                <Label Content="_Десяткова:" Grid.Row="1" VerticalAlignment="Center" Margin="5" Target="{Binding ElementName=DecimalTextBox}"/>
-                <TextBox x:Name="DecimalTextBox" Grid.Row="1" Grid.Column="1" Text="{Binding DecimalInput}" Margin="5"/>
-
-                <Label Content="_Двійкова:" Grid.Row="2" VerticalAlignment="Center" Margin="5" Target="{Binding ElementName=BinaryTextBox}"/>
-                <TextBox x:Name="BinaryTextBox" Grid.Row="2" Grid.Column="1" Text="{Binding BinaryInput}" Margin="5"/>
-
-                <Label Content="_Вісімкова:" Grid.Row="3" VerticalAlignment="Center" Margin="5" Target="{Binding ElementName=OctalTextBox}"/>
-                <TextBox x:Name="OctalTextBox" Grid.Row="3" Grid.Column="1" Text="{Binding OctalInput}" Margin="5"/>
-
-                <Label Content="_Шістнадцяткова:" Grid.Row="4" VerticalAlignment="Center" Margin="5" Target="{Binding ElementName=HexTextBox}"/>
-                <TextBox x:Name="HexTextBox" Grid.Row="4" Grid.Column="1" Text="{Binding HexInput}" Margin="5"/>
-
-                <!-- Кнопки -->
-                <Button Grid.Row="5" Grid.ColumnSpan="2" Content="_Конвертувати та зберегти" Command="{Binding ConvertAndSaveCommand}" Margin="5,10,5,5" />
-                <Button Grid.Row="6" Grid.ColumnSpan="2" Content="О_чистити" Command="{Binding ClearCommand}" Margin="5" IsDefault="True"/>
-            </Grid>
-        </TabItem>
-
-        <!-- Історія -->
-        <TabItem Header="Історія">
-            <Grid Margin="5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <Button Grid.Row="0" Content="Оновити історію" Command="{Binding RefreshHistoryCommand}" HorizontalAlignment="Left" Margin="5,5,5,10"/>
-
-                <DataGrid Grid.Row="1" Margin="5"
-                          ItemsSource="{Binding HistoryEntries}"
-                          AutoGenerateColumns="False"
-                          IsReadOnly="True" CanUserAddRows="False"
-                          HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto" SortDirection="Descending"/>
-                        <DataGridTextColumn Header="Користувач" Binding="{Binding Username}" Width="Auto"/>
-                        <DataGridTextColumn Header="Десяткове" Binding="{Binding Decimal}" Width="*"/>
-                        <DataGridTextColumn Header="Двійкове" Binding="{Binding Binary}" Width="*"/>
-                        <DataGridTextColumn Header="Вісімкове" Binding="{Binding Octal}" Width="*"/>
-                        <DataGridTextColumn Header="Шістнадцяткове" Binding="{Binding Hexadecimal}" Width="*"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
-        </TabItem>
-    </TabControl>
+        Title="Лабораторна робота №7" Height="550" Width="720" MinHeight="480" MinWidth="640">
+    <Grid>
+        <Frame Name="MainFrame"
+               NavigationUIVisibility="Visible"
+            JournalOwnership="OwnsJournal"/>
+    </Grid>
 </Window>

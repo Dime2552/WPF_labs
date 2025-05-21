@@ -1,0 +1,49 @@
+﻿<Page x:Class="lab6.ConverterPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:lab6"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="600"
+      Title="Сторінка Конвертера" Loaded="Page_Loaded">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Заголовок -->
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Конвертер Величин" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+
+        <Label Content="_Ім'я користувача:" Grid.Row="1" VerticalAlignment="Center" Margin="5" Target="{Binding ElementName=UsernameTextBox}"/>
+        <TextBox x:Name="UsernameTextBox" Grid.Row="1" Grid.Column="1" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+        <Label Content="_Десяткова:" Grid.Row="2" VerticalAlignment="Center" Margin="5" Target="{Binding ElementName=DecimalTextBox}"/>
+        <TextBox x:Name="DecimalTextBox" Grid.Row="2" Grid.Column="1" Text="{Binding DecimalInput, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+        <Label Content="_Двійкова:" Grid.Row="3" VerticalAlignment="Center" Margin="5" Target="{Binding ElementName=BinaryTextBox}"/>
+        <TextBox x:Name="BinaryTextBox" Grid.Row="3" Grid.Column="1" Text="{Binding BinaryInput, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+        <Label Content="_Вісімкова:" Grid.Row="4" VerticalAlignment="Center" Margin="5" Target="{Binding ElementName=OctalTextBox}"/>
+        <TextBox x:Name="OctalTextBox" Grid.Row="4" Grid.Column="1" Text="{Binding OctalInput, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+        <Label Content="_Шістнадцяткова:" Grid.Row="5" VerticalAlignment="Center" Margin="5" Target="{Binding ElementName=HexTextBox}"/>
+        <TextBox x:Name="HexTextBox" Grid.Row="5" Grid.Column="1" Text="{Binding HexInput, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+        <Button Grid.Row="6" Grid.ColumnSpan="2" Content="_Конвертувати та зберегти" Command="{Binding ConvertAndSaveCommand}" Margin="5,10,5,5" />
+        <Button Grid.Row="7" Grid.ColumnSpan="2" Content="О_чистити" Command="{Binding ClearCommand}" Margin="5"/>
+    </Grid>
+</Page>
